@@ -8,6 +8,9 @@ import android.support.annotation.NonNull;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.DefaultItemAnimator;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.View;
@@ -20,21 +23,34 @@ import com.hypertrack.lib.models.SuccessResponse;
 import com.hypertrack.lib.models.User;
 import com.hypertrack.lib.models.UserParams;
 
+import java.util.ArrayList;
+
 public class MainActivity extends AppCompatActivity {
+
+    RecyclerView recyclerView;
+    ArrayList<Task> tasksList=new ArrayList<>();
+    RecyclerView.Adapter mAdapter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        //Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
-        //setSupportActionBar(toolbar);
+
+        recyclerView = (RecyclerView) findViewById(R.id.recycler_view);
+
+        mAdapter = new TasksAdapter(tasksList);
+        RecyclerView.LayoutManager mLayoutManager = new LinearLayoutManager(getApplicationContext());
+
+        recyclerView.setLayoutManager(mLayoutManager);
+        recyclerView.setItemAnimator(new DefaultItemAnimator());
+        recyclerView.setAdapter(mAdapter);
+
         HyperTrack.initialize(MainActivity.this, "pk_test_1665645b7ddebd22fce62d7d0b1d693910daec76");
         checkForLocationSettings();
         UserParams userParams = new UserParams().setName("Nikhil")
                 .setPhone("+91-7523979176")
                 .setLookupId("+91-7523979176");
 
-// This API will create a new user only if none exists already for the given lookup_id
         HyperTrack.getOrCreateUser(userParams, new HyperTrackCallback() {
             @Override
             public void onSuccess(@NonNull SuccessResponse response) {
@@ -51,6 +67,15 @@ public class MainActivity extends AppCompatActivity {
             public void onError(@NonNull ErrorResponse errorResponse) {
                 // Handle createUser error here
                 Toast.makeText(MainActivity.this, errorResponse.getErrorMessage(), Toast.LENGTH_SHORT).show();
+            }
+        });
+
+        FloatingActionButton fab=(FloatingActionButton)findViewById(R.id.fab);
+        fab.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent i=new Intent(MainActivity.this,FormActivity.class);
+                startActivity(i);
             }
         });
     }
@@ -97,6 +122,11 @@ public class MainActivity extends AppCompatActivity {
                 Toast.makeText(this, "Enable Location Services request denied.", Toast.LENGTH_SHORT).show();
             }
         }
+    }
+
+    void prepareData()
+    {
+
     }
 
 }
