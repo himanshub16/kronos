@@ -16,6 +16,10 @@ import android.util.Log;
 import android.view.View;
 import android.widget.Toast;
 
+import com.google.android.gms.common.GooglePlayServicesNotAvailableException;
+import com.google.android.gms.common.GooglePlayServicesRepairableException;
+import com.google.android.gms.location.places.Place;
+import com.google.android.gms.location.places.ui.PlacePicker;
 import com.hypertrack.lib.HyperTrack;
 import com.hypertrack.lib.callbacks.HyperTrackCallback;
 import com.hypertrack.lib.models.ErrorResponse;
@@ -24,9 +28,11 @@ import com.hypertrack.lib.models.User;
 import com.hypertrack.lib.models.UserParams;
 
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 
 public class MainActivity extends AppCompatActivity {
-
+    int PLACE_PICKER_REQUEST = 1;
     RecyclerView recyclerView;
     ArrayList<Task> tasksList=new ArrayList<>();
     RecyclerView.Adapter mAdapter;
@@ -74,10 +80,22 @@ public class MainActivity extends AppCompatActivity {
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Intent i=new Intent(MainActivity.this,FormActivity.class);
-                startActivity(i);
+            Intent i=new Intent(MainActivity.this,FormActivity.class);
+            startActivity(i);
             }
         });
+
+    }
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+
+        if (requestCode == HyperTrack.REQUEST_CODE_LOCATION_SERVICES) {
+            if (resultCode == Activity.RESULT_OK) {
+                checkForLocationSettings();
+            } else {
+                // Handle Enable Location Services request denied error
+                Toast.makeText(this, "Enable Location Services request denied.", Toast.LENGTH_SHORT).show();
+            }
+        }
     }
 
     private void checkForLocationSettings() {
@@ -111,22 +129,11 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
-    @Override
-    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        super.onActivityResult(requestCode, resultCode, data);
-        if (requestCode == HyperTrack.REQUEST_CODE_LOCATION_SERVICES) {
-            if (resultCode == Activity.RESULT_OK) {
-                checkForLocationSettings();
-            } else {
-                // Handle Enable Location Services request denied error
-                Toast.makeText(this, "Enable Location Services request denied.", Toast.LENGTH_SHORT).show();
-            }
-        }
-    }
+
 
     void prepareData()
     {
-
+        //List<Task> taskList= Arrays.asList(getResources().getStringArray(R.array.taskslist));
     }
 
 }

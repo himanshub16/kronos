@@ -44,7 +44,7 @@ public class TasksAdapter extends RecyclerView.Adapter<TasksAdapter.MyViewHolder
     public void onBindViewHolder(MyViewHolder holder, int position) {
         Task task = TasksList.get(position);
         holder.description.setText(task.description);
-        holder.locationname.setText(task.location);
+        holder.locationname.setText(task.locationname);
     }
 
     @Override
