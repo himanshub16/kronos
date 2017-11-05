@@ -2,7 +2,9 @@ package com.example.phoenix.kronos;
 
 import android.app.Activity;
 import android.content.Intent;
+import android.os.AsyncTask;
 import android.provider.ContactsContract;
+import android.support.annotation.NonNull;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -24,16 +26,58 @@ import com.google.android.gms.location.places.Place;
 import com.google.android.gms.location.places.ui.PlacePicker;
 import com.google.android.gms.maps.model.LatLng;
 import com.hypertrack.lib.HyperTrack;
+import com.hypertrack.lib.callbacks.HyperTrackCallback;
+import com.hypertrack.lib.models.ErrorResponse;
+import com.hypertrack.lib.models.SuccessResponse;
 
+import java.text.Normalizer;
 import java.util.Date;
 import java.util.List;
 
 public class FormActivity extends AppCompatActivity {
 
+    private class CheckGeofence extends AsyncTask<String, Void, String> {
+        @Override
+        protected String doInBackground(String... urls) {
+                HyperTrack.getCurrentLocation(new HyperTrackCallback() {
+                    @Override
+                    public void onSuccess(@NonNull SuccessResponse successResponse) {
+                        String[] msg = successResponse.getResponseObject().toString().split(" ")[1].split(",");
+                        System.out.println(msg);
+                        double x = Double.valueOf(msg[0]), y = Double.valueOf(msg[1]);
+
+                        double a = FormActivity.lat;
+                        double b = FormActivity.lon;+
+
+                        if (Math.abs(a - x) + Math.abs(b - y) < 0.001) {
+                            Toast.makeText(FormActivity.this, "Inside geofence", Toast.LENGTH_LONG).show();
+                        }
+                        else {
+                            Toast.makeText(FormActivity.this, "Not inside geofence", Toast.LENGTH_LONG).show();
+                        }
+                    }
+
+                    @Override
+                    public void onError(@NonNull ErrorResponse errorResponse) {
+
+                    }
+                });
+
+                return "success";
+        }
+
+        @Override
+        protected void onPostExecute(String result) {
+            Log.v("end", result);
+        }
+    }
+
+
     private static final int RESULT_PICK_CONTACT = 2000;
 
     int PLACE_PICKER_REQUEST=1;
     LatLng ll;
+    static double lat, lon;
     String locationname="";
     String description="";
     String actiontype="";
@@ -63,6 +107,8 @@ public class FormActivity extends AppCompatActivity {
             @Override
             public void onClick(View view) {
 
+
+                (new CheckGeofence()).execute();
                 //Toast.makeText(FormActivity.this,"Adding a task here",Toast.LENGTH_SHORT).show();
             }
         });
@@ -96,6 +142,9 @@ public class FormActivity extends AppCompatActivity {
                 String toastMsg = String.format("Place: %s", place.getName());
                 TextView p= findViewById(R.id.place);
                 p.setText(place.getName());
+
+                lat = place.getLatLng().latitude;
+                lon = place.getLatLng().longitude;
                 Toast.makeText(this, toastMsg, Toast.LENGTH_LONG).show();
             }
         } else if (requestCode == RESULT_PICK_CONTACT) {
