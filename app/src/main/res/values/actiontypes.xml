@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string-array name="action_types">
+        <item name="sms">Send SMS</item>
+        <item name="notification">Show notification</item>
+        <item name="silent">Turn on silent mode</item>
+    </string-array>
+</resources>

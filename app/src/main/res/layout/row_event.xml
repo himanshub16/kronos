@@ -2,34 +2,38 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:focusable="true"
-    android:paddingLeft="16dp"
-    android:paddingRight="16dp"
-    android:paddingTop="10dp"
-    android:paddingBottom="10dp"
     android:clickable="true"
-    android:orientation="vertical">
+    android:focusable="true"
+    android:orientation="vertical"
+    android:paddingHorizontal="@dimen/horizontalPadding"
+    android:paddingVertical="@dimen/verticalPadding">
 
     <TextView
         android:id="@+id/description"
-        android:textSize="16sp"
-        android:textStyle="bold"
-        android:layout_alignParentTop="true"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content" />
+        android:layout_height="wrap_content"
+        android:layout_alignParentTop="true"
+        android:layout_marginRight="100dp"
+        android:text="Buy medicines"
+        android:textSize="20sp"
+        android:textStyle="bold" />
 
     <TextView
         android:id="@+id/location_name"
-        android:layout_below="@id/description"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content" />
+        android:layout_height="wrap_content"
+        android:layout_below="@id/description"
+        android:layout_marginRight="100dp"
+        android:layout_marginTop="15dp"
+        android:text="Chandni Chowk" />
 
     <Button
         android:id="@+id/delete"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignParentRight="true"
+        android:height="80dp"
         android:background="@drawable/ic_action_delete"
-        android:layout_alignParentEnd="true" />
+        android:hapticFeedbackEnabled="true" />
 
 </RelativeLayout>
